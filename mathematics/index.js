@@ -1,5 +1,5 @@
-const MathFunction = require("./MathFunction");
+const MathEquation = require("./MathEquation");
 
 module.exports = {
-  MathFunction
+  MathEquation
 }

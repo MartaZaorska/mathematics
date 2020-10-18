@@ -6,44 +6,34 @@ const FORMULA_ELEMENTS = [...FORMULA_SIGNS, ...FORMULA_NUMBERS];
 
 const FORMULA_RULES = {
   "r": {
-    before: ["+", "-", "*", "/", "("],
-    after: ["number", "x", "("]
+    elements: ["number", "x", "("]
   },
   "^": {
-    before: ["number", "x", ")"],
-    after: ["number", "x", "("]
+    elements: ["number", "x", "("]
   },
   "*": {
-    before: ["number", ")", "x"],
-    after: ["number", "(", "r", "x"]
+    elements: ["number", "(", "r", "x"]
   },
   "/": {
-    before: ["number", ")", "x"],
-    after: ["number", "(", "r", "x"]
+    elements: ["number", "(", "r", "x"]
   },
   "+": {
-    before: ["number", ")", "(", "x"],
-    after: ["number", "(", "r", "x"]
+    elements: ["number", "(", "r", "x"]
   },
   "-": {
-    before: ["number", ")", "(", "x"],
-    after: ["number", "(", "r", "x"]
+    elements: ["number", "(", "r", "x"]
   },
   "(": {
-    before: ["+", "-", "*", "/", "(", "r", "^"],
-    after: ["number", "+", "-", "r", "x", "("]
+    elements: ["number", "+", "-", "r", "x", "("]
   },
   ")": {
-    before: ["number", "x", ")"],
-    after: ["^", "/", "*", "+", "-", ")"]
+    elements: ["^", "/", "*", "+", "-", ")"]
   },
   "x": {
-    before: ["+", "-", "*", "/", "(", "r", "^"],
-    after: ["^", ")", "+", "-", "*", "/"]
+    elements: ["^", ")", "+", "-", "*", "/"]
   },
   "number": {
-    before: ["+", "-", "*", "/", "(", "^", "r"],
-    after: ["+", "-", "*", "/", ")", "^"]
+    elements: ["+", "-", "*", "/", ")", "^"]
   },
   "start": {
     elements: ["-", "(", "x", "number", "r"]
