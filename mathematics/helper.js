@@ -1,6 +1,6 @@
 const prepareNumber = (value) => {
   const tmp = value.replace(",", ".");
-  return checkNumber(tmp) ? tmp : "";
+  return checkNumber(tmp) ? parseFloat(tmp) : undefined;
 };
 
 const checkNumber = (value) => {
