@@ -1,0 +1,20 @@
+{
+  "name": "mathematics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartaZaorska/mathematics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/MartaZaorska/mathematics#readme",
+  "devDependencies": {
+    "jest": "^26.6.0"
+  }
+}
