@@ -14,6 +14,8 @@ const replaceInArray = (array, startIndex, endIndex, value) => {
   return tab1.concat(tab2);
 }
 
+const fixed = (value, digital = 3) => +(value.toFixed(digital));
+
 module.exports = {
-  prepareNumber, checkNumber, replaceInArray
+  prepareNumber, checkNumber, replaceInArray, fixed
 }
