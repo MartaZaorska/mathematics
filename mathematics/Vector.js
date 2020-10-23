@@ -51,6 +51,57 @@ class Vector {
     
     return pointA.map((item, index) => fixed((item + pointB[index]) / 2));
   }
+
+  static multiplyVector(vector, value){
+    //validate first argument
+    this.#validate(vector);
+
+    //validate second argument
+    if(typeof value !== "number") throw new Error("Invalid argument: value must be a number.");
+
+    return vector.map(item => fixed(item * value));
+  }
+
+  static addVectors(vector1, vector2){
+    //validate arguments
+    this.#validate(vector1, vector2);
+
+    return vector1.map((item, index) => fixed(item + vector2[index]));
+  }
+
+  static subtractVectors(vector1, vector2){
+    //validate arguments
+    this.#validate(vector1, vector2);
+
+    return vector1.map((item, index) => fixed(item - vector2[index]));
+  }
+
+  static crossProduct(vector1, vector2){
+    //validate arguments
+    this.#validate(vector1, vector2);
+
+    //check if the vectors are three-dimensional
+    if(vector1.length !== 3)  throw new Error("Invalid argument: vectors must be an array containing three numbers.");
+
+    return [
+      fixed(vector1[1] * vector2[2] - vector1[2] * vector2[1]),
+      fixed(-(vector1[0] * vector2[2] - vector1[2] * vector2[0])),
+      fixed(vector1[0] * vector2[1] - vector1[1] * vector2[0])
+    ];
+  }
+
+  static scalarProduct(vector1, vector2){
+    //validate arguments
+    this.#validate(vector1, vector2);
+
+    return vector1.map((item, index) => item * vector2[index]).reduce((prev, curr) => fixed(prev + curr), 0);
+  }
+
+
+  static tripleProduct(vector1, vector2, vector3){
+    const crossProduct = this.crossProduct(vector1, vector2);
+    return this.scalarProduct(crossProduct, vector3);
+  }
 }
 
 module.exports = Vector;
