@@ -36,8 +36,23 @@ class Matrix {
     });
   }
 
+  //validate natural number
+  static #validateNaturalNumber = (...data) => {
+    data.forEach(item => {
+      if(typeof item !== 'number' || item < 0 || Math.floor(item) !== item || item === Infinity) throw new Error("Invalid argument: required natural number.");
+    });
+  }
+
+  //validate array index
+  static #validateIndex = (arrayLength,...data) => {
+    data.forEach(item => {
+      this.#validateNaturalNumber(item);
+      if(item < 0 || item >= arrayLength) throw new Error(`Invalid arguments: indexes must be numbers greater than 0 and less than ${arrayLength + 1}`);
+    });
+  }
+
   //public methods
-  
+
   static add(matrixA, matrixB){
     //validate
     this.#validate(matrixA, matrixB);
@@ -68,6 +83,128 @@ class Matrix {
     return matrixA.map((row) => {
       return row.map(item => item * value);
     });
+  }
+
+  static multiply(matrixA, matrixB){
+    //validate
+    this.#validate(matrixA, matrixB);
+
+    if(matrixA[0].length !== matrixB.length) throw new Error("Invalid argument: matrixA must have the same number of columns as matrixB of rows.");
+
+    const result = [];
+    
+    matrixA.forEach((row, indexRow) => {
+      result[indexRow] = [];
+      for(let i = 0; i < matrixB[0].length; i++){
+        let value = 0;
+        row.forEach((item, index) => {
+          value += item * matrixB[index][i];
+        });
+        result[indexRow][i] = value;
+      }
+    });
+
+    return result;
+  }
+
+  static switchColumns(matrix, indexCol1, indexCol2){
+    const i1 = indexCol1 - 1;
+    const i2 = indexCol2 - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i1, i2);
+
+    return matrix.map((row, rowIndex) => {
+      const item1 = matrix[rowIndex][i1];
+      row[i1] = row[i2];
+      row[i2] = item1;
+      return row;
+    });
+  }
+
+  static switchRows(matrix, indexRow1, indexRow2){
+    const i1 = indexRow1 - 1;
+    const i2 = indexRow2 - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i1, i2);
+
+    const tmpRow1 = Array.from(matrix[i1]);
+    matrix[i1] = Array.from(matrix[i2]);
+    matrix[i2] = tmpRow1;
+    return matrix;
+  }
+
+  static multiplyColumn(matrix, indexColumn, value){
+    const i = indexColumn - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i);
+
+    if(typeof value !== "number" || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+  
+    return matrix.map((row) => {
+      row[i] *= value;
+      return row;
+    });
+  }
+
+  static multiplyRow(matrix, indexRow, value){
+    const i = indexRow - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i);
+
+    if(typeof value !== "number" || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+
+    matrix[i].forEach((_, index) => {
+      matrix[i][index] *= value;
+    });
+
+    return matrix;
+  }
+
+  static addColumnToColumn(matrix, indexCol, indexAddCol, value = 1){
+    const i = indexCol - 1;
+    const iA = indexAddCol - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i, iA);
+    
+    if(typeof value !== 'number' || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+
+    return matrix.map((row) => {
+      row[i] += (value*row[iA]);
+      return row;
+    });
+  }
+
+  static subtractColFromCol(matrix, indexCol, indexSubtractCol, value = 1){
+    if(typeof value !== 'number' || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+
+    return this.addColToCol(matrix, indexCol, indexSubtractCol, -value);
+  }
+
+  static addRowToRow(matrix, indexRow, indexAddRow, value = 1){
+    const i = indexRow - 1;
+    const iA = indexAddRow - 1;
+
+    this.#validate(matrix);
+    this.#validateIndex(matrix.length, i, iA);
+
+    if(typeof value !== 'number' || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+
+    matrix[i].forEach((_, index) => {
+      matrix[i][index] += (value * matrix[iA][index]);
+    });
+
+    return matrix;
+  }
+
+  static subtractRowFromRow(matrix, indexRow, indexAddRow, value = 1){
+    if(typeof value !== 'number' || value === 0) throw new Error("Invalid argument: value must be number other than 0");
+
+    return this.addRowToRow(matrix, indexRow, indexAddRow, -value);
   }
 }
 
