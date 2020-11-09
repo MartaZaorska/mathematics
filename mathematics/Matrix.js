@@ -206,6 +206,89 @@ class Matrix {
 
     return this.addRowToRow(matrix, indexRow, indexAddRow, -value);
   }
+
+  static isEqual(matrixA, matrixB){
+    //validate
+    this.#validate(matrixA, matrixB);
+    this.#validateDimension(matrixA, matrixB);
+
+    return matrixA.every((row, rowIndex) => {
+      return row.every((item, index) => {
+        return item === matrixB[rowIndex][index];
+      });
+    });
+  }
+
+  static isSquare(matrix){
+    //validate
+    this.#validate(matrix);
+
+    return matrix.length === matrix[0].length;
+  }
+
+  static isZero(matrix){
+    //validate
+    this.#validate(matrix);
+
+    return matrix.every(row => {
+      return row.every(item => item === 0);
+    });
+  }
+
+  static isLowerTriangular(matrix){
+    //validate
+    this.#validate(matrix);
+    this.#validateSquare(matrix);
+
+    if(matrix.length === 1) return true;
+
+    let isLowerTriangular = true;
+    let i = 1;
+    while(i < matrix.length && isLowerTriangular){
+      let j = 0;
+      while(j < i && isLowerTriangular){
+        if(matrix[i][j] !== 0) isLowerTriangular = false;
+        ++j;
+      }
+      ++i;
+    }
+
+    return isLowerTriangular;
+  }
+
+  static isUpperTriangular(matrix){
+    //validate
+    this.#validate(matrix);
+    this.#validateSquare(matrix);
+
+    if(matrix.length === 1) return true;
+
+    let isUpperTriangular = true;
+    let i = 0;
+    while(i < matrix.length - 1 && isUpperTriangular){
+      let j = i + 1;
+      while(j < matrix.length && isUpperTriangular){
+        if(matrix[i][j] !== 0) isUpperTriangular = false;
+        ++j;
+      }
+      ++i;
+    }
+
+    return isUpperTriangular;
+  }
+
+  static isTriangular(matrix){
+    return this.isLowerTriangular(matrix) || this.isUpperTriangular(matrix);
+  }
+
+  static isDiagonal(matrix){
+    //validate
+    this.#validate(matrix);
+
+    if(matrix.length === 1) return true;
+
+    return this.isUpperTriangular(matrix) && this.isLowerTriangular(matrix);
+  }
 }
 
 module.exports = Matrix;
