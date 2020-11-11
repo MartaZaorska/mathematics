@@ -51,6 +51,34 @@ class Matrix {
     });
   }
 
+  static #getSubMatrix = (matrix, indexDelRow, indexDelColumn) => {
+    //deep copy array
+    const subMatrix = [];
+    matrix.forEach(row => {
+      subMatrix.push(Array.from(row));
+    });
+
+    //delete column and row
+    subMatrix.splice(indexDelRow, 1);
+    subMatrix.forEach(row => {
+      row.splice(indexDelColumn, 1);
+    });
+    
+    return subMatrix;
+  }
+
+  static #det = (matrix) => {
+    let detMatrix = 0;
+    for(let i = 0; i < matrix.length; ++i){
+      if(matrix.length === 1) detMatrix += matrix[0][0];
+      const subMatrix = this.#getSubMatrix(matrix, [i], [0]);
+      const detSubMatrix = this.#det(subMatrix);
+      detMatrix += (-1) ** (i+2) * matrix[i][0] * detSubMatrix
+    }
+
+    return detMatrix;
+  }
+
   //public methods
 
   static add(matrixA, matrixB){
@@ -288,6 +316,63 @@ class Matrix {
     if(matrix.length === 1) return true;
 
     return this.isUpperTriangular(matrix) && this.isLowerTriangular(matrix);
+  }
+
+  static isInvertible(matrix){
+    return this.isNonSingular(matrix);
+  }
+
+  static isSingular(matrix){
+    const det = this.getDeterminant(matrix);
+    return det === 0;
+  }
+
+  static isNonSingular(matrix){
+    return !this.isSingular(matrix);
+  }
+
+  static getDeterminant(matrix){
+    //validate
+    this.#validate(matrix);
+    this.#validateSquare(matrix);
+
+    return this.#det(matrix);
+  }
+
+  static getIdentity(dimension){
+    this.#validateNaturalNumber(dimension);
+
+    if(dimension < 1) throw new Error("Invalid argument: dimension must be number greater than 0.");
+
+    const diagonalMatrix = [];
+    for(let i = 0; i < dimension; i++){
+      const row = new Array(dimension).fill(0);
+      row[i] = 1;
+      diagonalMatrix.push(row);
+    }
+    
+    return diagonalMatrix;
+  }
+
+  static getDiagonal(matrix){
+    //validate
+    this.#validate(matrix);
+    this.#validateSquare(matrix);
+
+    return matrix.map((row, indexRow) => {
+      return row[indexRow];
+    });
+  }
+
+  static getOpposite(matrix){
+    //validate
+    this.#validate(matrix);
+
+    return matrix.map((row) => {
+      return row.map((item) => {
+        return item === 0 ? item : -item;
+      });
+    });
   }
 }
 
