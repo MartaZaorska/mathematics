@@ -331,6 +331,37 @@ class Matrix {
     return !this.isSingular(matrix);
   }
 
+  static isSymmetric(matrix) {
+    const transpose = this.getTranspose(matrix);
+    return this.isEqual(matrix, transpose);
+  }
+
+  static isAntisymmetric(matrix) {
+    this.#validate(matrix);
+
+    const transposeMatrix = this.getTranspose(matrix);
+    const oppositeMatrix = this.getOpposite(matrix);
+    return this.isEqual(transposeMatrix, oppositeMatrix);
+  }
+
+  static isIdentity(matrix) {
+    //validate
+    this.#validate(matrix);
+    this.#validateSquare(matrix);
+
+    const oneInDiagonal = this.getDiagonal(matrix).every((item) => item === 1);
+    return this.isDiagonal(matrix) && oneInDiagonal;
+  }
+
+  static isOpposite(matrixA, matrixB) {
+    //validate
+    this.#validate(matrixA, matrixB);
+    this.#validateDimension(matrixA, matrixB);
+
+    const oppositeMatrixA = this.getOpposite(matrixA);
+    return this.isEqual(matrixB, oppositeMatrixA);
+  }
+
   static getDeterminant(matrix){
     //validate
     this.#validate(matrix);
@@ -373,6 +404,23 @@ class Matrix {
         return item === 0 ? item : -item;
       });
     });
+  }
+
+  static getTranspose(matrix){
+    //validate
+    this.#validate(matrix);
+
+    const result = [];
+
+    for(let i = 0; i < matrix[0].length; i++){
+      const row = [];
+      for(let j = 0; j < matrix.length; j++){
+        row.push(matrix[j][i]);
+      }
+      result.push(row);
+    }
+    
+    return result;
   }
 }
 
