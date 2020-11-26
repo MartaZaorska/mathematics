@@ -1,5 +1,5 @@
 const prepareNumber = (value) => {
-  const tmp = value.replace(",", ".");
+  const tmp = value.replace(',', '.');
   return checkNumber(tmp) ? parseFloat(tmp) : undefined;
 };
 
@@ -12,10 +12,16 @@ const replaceInArray = (array, startIndex, endIndex, value) => {
   const tab2 = array.slice(endIndex + 1);
   tab1.push(value);
   return tab1.concat(tab2);
-}
+};
 
-const fixed = (value, digital = 3) => +(value.toFixed(digital));
+const fixed = (value, digital = 3) => {
+  if (value === 0) return 0;
+  return +value.toFixed(digital);
+};
 
 module.exports = {
-  prepareNumber, checkNumber, replaceInArray, fixed
-}
+  prepareNumber,
+  checkNumber,
+  replaceInArray,
+  fixed,
+};
