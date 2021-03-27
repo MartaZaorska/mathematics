@@ -15,7 +15,7 @@ class Algebra {
   static #calcFactorial = (n, m = 1) => {
     if (n <= 1) return m * 1;
     const result = n * m;
-    return this.#calcFactorial(n - 1, result);
+    return this.#calcFactorial(n - 1, n * m);
   };
 
   //public methods
@@ -26,7 +26,10 @@ class Algebra {
 
   static symbolNewton(n, k) {
     this.#validateNaturalNumber(n, k);
-    if (n < k) throw new Error('');
+    if (n < k)
+      throw new Error(
+        'Invalid argument: "n" must be greater or equal than "k".'
+      );
 
     const factorialN = this.#calcFactorial(n);
     const factorialK = this.#calcFactorial(k);
@@ -37,16 +40,16 @@ class Algebra {
 
   static binomialTheorem(n) {
     this.#validateNaturalNumber(n);
-    let result = `(a+b)^${n} = a^${n} + `;
+    let result = `(a+b)^${n} = (a^${n}) + `;
 
     for (let k = 1; k < n; ++k) {
       const symbolNewton = this.symbolNewton(n, k);
       result += `${symbolNewton}*`;
-      result += n - k === 1 ? 'a*' : `a^${n - k}*`;
-      result += k === 1 ? 'b + ' : `b^${k} + `;
+      result += n - k === 1 ? 'a*' : `(a^${n - k})*`;
+      result += k === 1 ? 'b + ' : `(b^${k}) + `;
     }
 
-    result += `b^${n}`;
+    result += `(b^${n})`;
 
     return result;
   }
