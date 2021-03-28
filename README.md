@@ -46,10 +46,10 @@ const v1 = [1, 0, 0],
   v2 = [2, 0, 3];
 
 //norma wektora v1
-const norm = Vector.getNorm(v1); // 4
+const norm = Vector.getNorm(v1); // 1
 
 //iloczyn skalarny wektorów v1 i v2
-const scalar = Vector.scalarProduct(v1, v2); // 1.414
+const scalar = Vector.scalarProduct(v1, v2); // 2
 ```
 
 ## Matrix
@@ -103,11 +103,11 @@ const m3 = [
   [0, 4],
 ];
 
-//zwraca macierz przeciwną do m2
+//macierz przeciwna do m2
 const opposite = Matrix.getOpposite(m2); // [[-1], [-3]]
 
 //do kolumny pierwszej dodano kolumnę drugą pomnożoną przez (-1)
-const changedMatrix = Matrix.addColToCol(m1, 1, 2, -1);
+const changedMatrix = Matrix.addColToCol(m1, 1, 2, -1); //[ [ 3, -2, 3 ], [ -4, 4, -0.6 ] ]
 
 //sprawdza czy macierz m3 jest macierzą diagonalną
 const isDiagonal = Matrix.isDiagonal(m3); // true
