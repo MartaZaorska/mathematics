@@ -117,61 +117,61 @@ class Matrix {
   //public methods
 
   //returns the sum of matrixA and matrixB
-  static add(matrixA, matrixB) {
+  static add(m1, m2) {
     //validate
-    this.#validate(matrixA, matrixB);
-    this.#validateDimension(matrixA, matrixB);
+    this.#validate(m1, m2);
+    this.#validateDimension(m1, m2);
 
-    return matrixA.map((row, indexRow) => {
-      return row.map((item, index) => fixed(item + matrixB[indexRow][index]));
+    return m1.map((row, indexRow) => {
+      return row.map((item, index) => fixed(item + m2[indexRow][index]));
     });
   }
 
   //subtraction of matrixA and matrixB
-  static subtract(matrixA, matrixB) {
+  static subtract(m1, m2) {
     //validate
-    this.#validate(matrixA, matrixB);
-    this.#validateDimension(matrixA, matrixB);
+    this.#validate(m1, m2);
+    this.#validateDimension(m1, m2);
 
-    return matrixA.map((row, indexRow) => {
-      return row.map((item, index) => fixed(item - matrixB[indexRow][index]));
+    return m1.map((row, indexRow) => {
+      return row.map((item, index) => fixed(item - m2[indexRow][index]));
     });
   }
 
   //matrix multiplication by number
-  static multiplyByNumber(matrix, value) {
+  static multiplyByNumber(m, x) {
     //validate
-    this.#validate(matrix);
+    this.#validate(m);
 
     //validate second argument
-    if (typeof value !== 'number')
+    if (typeof x !== 'number')
       throw new Error(
         'Invalid argument: the second argument must be a number.'
       );
 
-    return matrix.map((row) => {
-      return row.map((item) => fixed(item * value));
+    return m.map((row) => {
+      return row.map((item) => fixed(item * x));
     });
   }
 
   //matrix multiplication
-  static multiply(matrixA, matrixB) {
+  static multiply(m1, m2) {
     //validate
-    this.#validate(matrixA, matrixB);
+    this.#validate(m1, m2);
 
-    if (matrixA[0].length !== matrixB.length)
+    if (m1[0].length !== m2.length)
       throw new Error(
-        'Invalid argument: matrixA must have the same number of columns as matrixB of rows.'
+        'Invalid argument: first matrix must have the same number of columns as second matrix of rows.'
       );
 
     const result = [];
 
-    matrixA.forEach((row, indexRow) => {
+    m1.forEach((row, indexRow) => {
       result[indexRow] = [];
-      for (let i = 0; i < matrixB[0].length; i++) {
+      for (let i = 0; i < m2[0].length; i++) {
         let value = 0;
         row.forEach((item, index) => {
-          value += item * matrixB[index][i];
+          value += item * m2[index][i];
         });
         result[indexRow][i] = fixed(value);
       }
@@ -181,15 +181,15 @@ class Matrix {
   }
 
   //changing the position of two columns
-  static switchColumns(matrix, indexCol1, indexCol2) {
-    const i1 = indexCol1 - 1;
-    const i2 = indexCol2 - 1;
+  static switchColumns(m, i, j) {
+    const i1 = i - 1;
+    const i2 = j - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix[0].length, i1, i2);
+    this.#validate(m);
+    this.#validateIndex(m[0].length, i1, i2);
 
-    return matrix.map((row, rowIndex) => {
-      const item1 = matrix[rowIndex][i1];
+    return m.map((row, rowIndex) => {
+      const item1 = m[rowIndex][i1];
       const newRow = Array.from(row);
       newRow[i1] = row[i2];
       newRow[i2] = item1;
@@ -198,147 +198,137 @@ class Matrix {
   }
 
   //changing the position of two rows
-  static switchRows(matrix, indexRow1, indexRow2) {
-    const i1 = indexRow1 - 1;
-    const i2 = indexRow2 - 1;
+  static switchRows(m, i, j) {
+    const i1 = i - 1;
+    const i2 = j - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix.length, i1, i2);
+    this.#validate(m);
+    this.#validateIndex(m, i1, i2);
 
-    const newMatrix = Array.from(matrix);
-    const tmpRow1 = Array.from(matrix[i1]);
-    newMatrix[i1] = Array.from(matrix[i2]);
+    const newMatrix = Array.from(m);
+    const tmpRow1 = Array.from(m[i1]);
+    newMatrix[i1] = Array.from(m[i2]);
     newMatrix[i2] = tmpRow1;
     return newMatrix;
   }
 
   //multiplying a column by a number
-  static multiplyColumn(matrix, indexColumn, value) {
-    const i = indexColumn - 1;
+  static multiplyColumn(m, i, x) {
+    const index = i - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix[0].length, i);
-    this.#validateNumber(value);
+    this.#validate(m);
+    this.#validateIndex(m[0].length, index);
+    this.#validateNumber(x);
 
-    return matrix.map((row) => {
-      const newValue = fixed(row[i] * value);
+    return m.map((row) => {
+      const newValue = fixed(row[index] * x);
       const newRow = Array.from(row);
-      newRow[i] = newValue;
+      newRow[index] = newValue;
       return newRow;
     });
   }
 
   //multiplying a row by a number
-  static multiplyRow(matrix, indexRow, value) {
-    const i = indexRow - 1;
+  static multiplyRow(m, i, x) {
+    const index = i - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix.length, i);
-    this.#validateNumber(value);
+    this.#validate(m);
+    this.#validateIndex(m.length, index);
+    this.#validateNumber(x);
 
-    const newMatrix = Array.from(matrix);
-    newMatrix[i] = Array.from(matrix[i]);
+    const newMatrix = Array.from(m);
+    newMatrix[index] = Array.from(m[index]);
 
-    matrix[i].forEach((_, index) => {
-      const newValue = fixed(matrix[i][index] * value);
-      newMatrix[i][index] = newValue;
+    m[index].forEach((_, indexCol) => {
+      const newValue = fixed(m[index][indexCol] * x);
+      newMatrix[index][indexCol] = newValue;
     });
 
     return newMatrix;
   }
 
   //adding a column (multiplied by a number or not) to another column
-  static addColToCol(matrix, indexCol, indexAddCol, value = 1) {
-    const i = indexCol - 1;
-    const iA = indexAddCol - 1;
+  static addColToCol(m, i, j, x = 1) {
+    const i1 = i - 1;
+    const i2 = j - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix[0].length, i, iA);
-    this.#validateNumber(value);
+    this.#validate(m);
+    this.#validateIndex(m[0].length, i1, i2);
+    this.#validateNumber(x);
 
-    return matrix.map((row) => {
-      const newValue = fixed(row[i] + value * row[iA]);
+    return m.map((row) => {
+      const newValue = fixed(row[i1] + x * row[i2]);
       const newRow = Array.from(row);
-      newRow[i] = newValue;
+      newRow[i1] = newValue;
       return newRow;
     });
   }
 
-  //subtracting a column (multiplied by a number or not) from another column
-  static subtractColFromCol(matrix, indexCol, indexSubtractCol, value = 1) {
-    return this.addColToCol(matrix, indexCol, indexSubtractCol, -value);
-  }
-
   //adding a row (multiplied by a number or not) to another row
-  static addRowToRow(matrix, indexRow, indexAddRow, value = 1) {
-    const i = indexRow - 1;
-    const iA = indexAddRow - 1;
+  static addRowToRow(m, i, j, x = 1) {
+    const i1 = i - 1;
+    const i2 = j - 1;
 
-    this.#validate(matrix);
-    this.#validateIndex(matrix.length, i, iA);
-    this.#validateNumber(value);
+    this.#validate(m);
+    this.#validateIndex(m.length, i1, i2);
+    this.#validateNumber(x);
 
-    const newMatrix = Array.from(matrix);
-    newMatrix[i] = Array.from(matrix[i]);
+    const newMatrix = Array.from(m);
+    newMatrix[i1] = Array.from(m[i1]);
 
-    matrix[i].forEach((_, index) => {
-      const newValue = fixed(matrix[i][index] + matrix[iA][index] * value);
-      newMatrix[i][index] = newValue;
+    m[i1].forEach((_, indexCol) => {
+      const newValue = fixed(m[i1][indexCol] + m[i2][indexCol] * x);
+      newMatrix[i1][indexCol] = newValue;
     });
 
     return newMatrix;
   }
 
-  //subtracting a row (multiplied by a number or not) from another row
-  static subtractRowFromRow(matrix, indexRow, indexAddRow, value = 1) {
-    return this.addRowToRow(matrix, indexRow, indexAddRow, -value);
-  }
-
   //checking if matrices are equal
-  static isEqual(matrixA, matrixB) {
+  static isEqual(m1, m2) {
     //validate
-    this.#validate(matrixA, matrixB);
-    this.#validateDimension(matrixA, matrixB);
+    this.#validate(m1, m2);
+    this.#validateDimension(m1, m2);
 
-    return matrixA.every((row, rowIndex) => {
+    return m1.every((row, rowIndex) => {
       return row.every((item, index) => {
-        return item === matrixB[rowIndex][index];
+        return item === m2[rowIndex][index];
       });
     });
   }
 
   //checking if the matrix is square
-  static isSquare(matrix) {
+  static isSquare(m) {
     //validate
-    this.#validate(matrix);
+    this.#validate(m);
 
-    return matrix.length === matrix[0].length;
+    return m.length === m[0].length;
   }
 
   //checking if the matrix filled with 0 only
-  static isZero(matrix) {
+  static isZero(m) {
     //validate
-    this.#validate(matrix);
+    this.#validate(m);
 
-    return matrix.every((row) => {
+    return m.every((row) => {
       return row.every((item) => item === 0);
     });
   }
 
   //checking if the matrix is triangular lower
-  static isLowerTriangular(matrix) {
+  static isLowerTriangular(m) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
+    this.#validate(m);
+    this.#validateSquare(m);
 
-    if (matrix.length === 1) return true;
+    if (m.length === 1) return true;
 
     let isLowerTriangular = true;
     let i = 1;
-    while (i < matrix.length && isLowerTriangular) {
+    while (i < m.length && isLowerTriangular) {
       let j = 0;
       while (j < i && isLowerTriangular) {
-        if (matrix[i][j] !== 0) isLowerTriangular = false;
+        if (m[i][j] !== 0) isLowerTriangular = false;
         ++j;
       }
       ++i;
@@ -348,19 +338,19 @@ class Matrix {
   }
 
   //checking if the matrix is triangular upper
-  static isUpperTriangular(matrix) {
+  static isUpperTriangular(m) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
+    this.#validate(m);
+    this.#validateSquare(m);
 
-    if (matrix.length === 1) return true;
+    if (m.length === 1) return true;
 
     let isUpperTriangular = true;
     let i = 0;
-    while (i < matrix.length - 1 && isUpperTriangular) {
+    while (i < m.length - 1 && isUpperTriangular) {
       let j = i + 1;
-      while (j < matrix.length && isUpperTriangular) {
-        if (matrix[i][j] !== 0) isUpperTriangular = false;
+      while (j < m.length && isUpperTriangular) {
+        if (m[i][j] !== 0) isUpperTriangular = false;
         ++j;
       }
       ++i;
@@ -370,81 +360,81 @@ class Matrix {
   }
 
   //checking if the matrix is triangular (upper and lower)
-  static isTriangular(matrix) {
-    return this.isLowerTriangular(matrix) || this.isUpperTriangular(matrix);
+  static isTriangular(m) {
+    return this.isLowerTriangular(m) || this.isUpperTriangular(m);
   }
 
   //checking if the matrix is diagonal
-  static isDiagonal(matrix) {
-    return this.isUpperTriangular(matrix) && this.isLowerTriangular(matrix);
+  static isDiagonal(m) {
+    return this.isUpperTriangular(m) && this.isLowerTriangular(m);
   }
 
   //checking if the matrix is invertible
-  static isInvertible(matrix) {
-    return this.isNonSingular(matrix);
+  static isInvertible(m) {
+    return this.isNonSingular(m);
   }
 
   //checking if the matrix is singular
-  static isSingular(matrix) {
-    const det = this.getDeterminant(matrix);
+  static isSingular(m) {
+    const det = this.getDeterminant(m);
     return det === 0;
   }
 
   //checking if the matrix is not singular
-  static isNonSingular(matrix) {
-    return !this.isSingular(matrix);
+  static isNonSingular(m) {
+    return !this.isSingular(m);
   }
 
   //checking if the matrix is symmetric
-  static isSymmetric(matrix) {
-    const transpose = this.getTranspose(matrix);
-    return this.isEqual(matrix, transpose);
+  static isSymmetric(m) {
+    const transpose = this.getTranspose(m);
+    return this.isEqual(m, transpose);
   }
 
   //checking if the matrix is antisymmetric
-  static isAntisymmetric(matrix) {
-    const transposeMatrix = this.getTranspose(matrix);
-    const oppositeMatrix = this.getOpposite(matrix);
+  static isAntisymmetric(m) {
+    const transposeMatrix = this.getTranspose(m);
+    const oppositeMatrix = this.getOpposite(m);
     return this.isEqual(transposeMatrix, oppositeMatrix);
   }
 
   //checking if the matrix is identity (it has 1 on the diagonal, 0 in others)
-  static isIdentity(matrix) {
+  static isIdentity(m) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
+    this.#validate(m);
+    this.#validateSquare(m);
 
-    const oneInDiagonal = this.getDiagonal(matrix).every((item) => item === 1);
-    return this.isDiagonal(matrix) && oneInDiagonal;
+    const oneInDiagonal = this.getDiagonal(m).every((item) => item === 1);
+    return this.isDiagonal(m) && oneInDiagonal;
   }
 
   //checks if matrix A is opposite to matrix B
-  static isOpposite(matrixA, matrixB) {
-    const oppositeMatrixA = this.getOpposite(matrixA);
-    return this.isEqual(matrixB, oppositeMatrixA);
+  static isOpposite(m1, m2) {
+    const oppositeMatrix1 = this.getOpposite(m1);
+    return this.isEqual(m2, oppositeMatrix1);
   }
 
   //returns the matrix determinant
-  static getDeterminant(matrix) {
+  static getDeterminant(m) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
+    this.#validate(m);
+    this.#validateSquare(m);
 
-    return this.#det(matrix);
+    return this.#det(m);
   }
 
   //returns the identity matrix of the specified dimension
-  static getIdentity(dimension) {
-    this.#validateNaturalNumber(dimension);
+  static getIdentity(dim) {
+    this.#validateNaturalNumber(dim);
 
-    if (dimension < 1)
+    if (dim < 1)
       throw new Error(
         'Invalid argument: dimension must be number greater than 0.'
       );
 
     const diagonalMatrix = [];
-    for (let i = 0; i < dimension; i++) {
-      const row = new Array(dimension).fill(0);
+    for (let i = 0; i < dim; i++) {
+      const row = new Array(dim).fill(0);
       row[i] = 1;
       diagonalMatrix.push(row);
     }
@@ -453,22 +443,22 @@ class Matrix {
   }
 
   //returns the diagonal of the matrix
-  static getDiagonal(matrix) {
+  static getDiagonal(m) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
+    this.#validate(m);
+    this.#validateSquare(m);
 
-    return matrix.map((row, indexRow) => {
+    return m.map((row, indexRow) => {
       return row[indexRow];
     });
   }
 
   //returns the opposite matrix
-  static getOpposite(matrix) {
+  static getOpposite(m) {
     //validate
-    this.#validate(matrix);
+    this.#validate(m);
 
-    return matrix.map((row) => {
+    return m.map((row) => {
       return row.map((item) => {
         return item === 0 ? item : -item;
       });
@@ -476,16 +466,16 @@ class Matrix {
   }
 
   //returns a transposed matrix
-  static getTranspose(matrix) {
+  static getTranspose(m) {
     //validate
-    this.#validate(matrix);
+    this.#validate(m);
 
     const result = [];
 
-    for (let i = 0; i < matrix[0].length; i++) {
+    for (let i = 0; i < m[0].length; i++) {
       const row = [];
-      for (let j = 0; j < matrix.length; j++) {
-        row.push(matrix[j][i]);
+      for (let j = 0; j < m.length; j++) {
+        row.push(m[j][i]);
       }
       result.push(row);
     }
@@ -494,52 +484,47 @@ class Matrix {
   }
 
   //return algebraic complement for a specific row and column
-  static getAlgebraicComplement(matrix, numRow, numColumn) {
+  static getAlgebraicComplement(m, i, j) {
     //validate
-    this.#validate(matrix);
-    this.#validateSquare(matrix);
-    this.#validateNaturalNumber(numRow, numColumn);
+    this.#validate(m);
+    this.#validateSquare(m);
+    this.#validateNaturalNumber(i, j);
 
-    if (matrix.length <= 1)
+    if (m.length <= 1)
       throw new Error(
         'Invalid argument: the matrix dimension must be greater than 1.'
       );
 
-    if (
-      numRow < 1 ||
-      numRow > matrix.length ||
-      numColumn < 1 ||
-      numColumn > matrix.length
-    )
+    if (i < 1 || i > m.length || j < 1 || j > m.length)
       throw new Error(
         `Invalid argument: row index and column index must be number greater than 0 and less than ${
-          matrix.length + 1
+          m.length + 1
         }.`
       );
 
-    const subMatrix = this.#getSubMatrix(matrix, [numRow - 1], [numColumn - 1]);
+    const subMatrix = this.#getSubMatrix(m, [i - 1], [j - 1]);
     const det = this.#det(subMatrix);
 
-    return fixed((-1) ** (numRow + numColumn) * det);
+    return fixed((-1) ** (i + j) * det);
   }
 
   //returns a matrix filled with algebraic complements for the specified column and row
-  static getMatrixOfAlgebraicComplements(matrix) {
-    return matrix.map((row, rowIndex) => {
+  static getMatrixOfAlgebraicComplements(m) {
+    return m.map((row, rowIndex) => {
       return row.map((_, index) => {
-        return this.getAlgebraicComplement(matrix, rowIndex + 1, index + 1);
+        return this.getAlgebraicComplement(m, rowIndex + 1, index + 1);
       });
     });
   }
 
   //return a invertible matrix
-  static getInvertibleMatrix(matrix) {
-    const det = this.getDeterminant(matrix);
+  static getInvertibleMatrix(m) {
+    const det = this.getDeterminant(m);
 
     if (det === 0) return false;
 
     const matrixOfAlgebraicComplements = this.getMatrixOfAlgebraicComplements(
-      matrix
+      m
     );
     const transposeAC = this.getTranspose(matrixOfAlgebraicComplements);
     return this.multiplyByNumber(transposeAC, 1 / det);

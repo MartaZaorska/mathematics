@@ -24,83 +24,72 @@ class Vector {
   };
 
   //public methods
-  static create(pointA, pointB) {
+  static create(a, b) {
     //validate arguments
-    this.#validate(pointA, pointB);
+    this.#validate(a, b);
 
-    return pointB.map((item, index) => fixed(item - pointA[index]));
+    return b.map((item, index) => fixed(item - a[index]));
   }
 
-  static getNorm(vector) {
+  static getNorm(v) {
     //validate argument
-    this.#validate(vector);
+    this.#validate(v);
 
     //one-dimensional vector
-    if (vector.length === 1) return Math.abs(fixed(vector[1] - vector[0]));
+    if (v.length === 1) return Math.abs(fixed(v[1] - v[0]));
     //more than one-dimensional vector
-    return fixed(Math.sqrt(vector.reduce((prev, curr) => prev + curr ** 2, 0)));
+    return fixed(Math.sqrt(v.reduce((prev, curr) => prev + curr ** 2, 0)));
   }
 
-  static getLength(vector) {
-    return this.getNorm(vector);
+  static getLength(v) {
+    return this.getNorm(v);
   }
 
-  static getOpposite(vector) {
+  static getOpposite(v) {
     //validate argument
-    this.#validate(vector);
+    this.#validate(v);
 
-    return vector.map((item) => {
+    return v.map((item) => {
       return item === 0 ? 0 : -item;
     });
   }
 
-  static getCenterPoint(pointA, pointB) {
-    //validate arguments
-    this.#validate(pointA, pointB);
-
-    return pointA.map((item, index) => fixed((item + pointB[index]) / 2));
-  }
-
-  static multiply(vector, value) {
+  static multiply(v, x) {
     //validate first argument
-    this.#validate(vector);
+    this.#validate(v);
 
     //validate second argument
-    if (typeof value !== 'number')
-      throw new Error('Invalid argument: value must be a number.');
+    if (typeof x !== 'number')
+      throw new Error('Invalid argument: x must be a number.');
 
-    return vector.map((item) => fixed(item * value));
+    return v.map((item) => fixed(item * x));
   }
 
-  static add(vector1, vector2) {
+  static add(v1, v2) {
     //validate arguments
-    this.#validate(vector1, vector2);
+    this.#validate(v1, v2);
 
-    return vector1.map((item, index) => fixed(item + vector2[index]));
+    return v1.map((item, index) => fixed(item + v2[index]));
   }
 
-  static subtract(vector1, vector2) {
+  static subtract(v1, v2) {
     //validate arguments
-    this.#validate(vector1, vector2);
+    this.#validate(v1, v2);
 
-    return vector1.map((item, index) => fixed(item - vector2[index]));
+    return v1.map((item, index) => fixed(item - v2[index]));
   }
 
-  static scalarProduct(vector1, vector2) {
+  static scalarProduct(v1, v2) {
     //validate arguments
-    this.#validate(vector1, vector2);
+    this.#validate(v1, v2);
 
-    return vector1
-      .map((item, index) => item * vector2[index])
+    return v1
+      .map((item, index) => item * v2[index])
       .reduce((prev, curr) => fixed(prev + curr), 0);
   }
 
-  static isOrthogonal(vector1, vector2) {
-    return this.scalarProduct(vector1, vector2) === 0 ? true : false;
-  }
-
-  static isOrthonormal(vector) {
-    return fixed(this.getNorm(vector), 0) === 1 ? true : false;
+  static isOrthogonal(v1, v2) {
+    return this.scalarProduct(v1, v2) === 0 ? true : false;
   }
 
   static areOrthogonal(...vectors) {
@@ -116,21 +105,13 @@ class Vector {
     return orthogonal;
   }
 
-  static areOrthonormal(...vectors) {
-    this.#validate(...vectors);
-    let orthonormal = true;
+  static getAngle(v1, v2) {
+    const norms = this.getNorm(v1) * this.getNorm(v2);
 
-    for (let i = 0; i < vectors.length && orthonormal; i++) {
-      orthonormal = this.isOrthonormal(vectors[i]);
-    }
+    if (norms === 0)
+      throw new Error('Invalid operation: divide by zero is forbidden.');
 
-    return orthonormal;
-  }
-
-  static getAngle(vector1, vector2) {
-    const cos =
-      this.scalarProduct(vector1, vector2) /
-      (this.getNorm(vector1) * this.getNorm(vector2));
+    const cos = this.scalarProduct(v1, v2) / norms;
     return fixed((Math.acos(cos) / Math.PI) * 180, 1);
   }
 }

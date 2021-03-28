@@ -20,10 +20,6 @@ test('Method getOpposite(): vector [0, 2.5, -3]', () => {
   expect(Vector.getOpposite([0, 2.5, -3])).toStrictEqual([0, -2.5, 3]);
 });
 
-test('Method getCenterPoint(): points A[-10] and B[2.5]', () => {
-  expect(Vector.getCenterPoint([-10], [2.5])).toStrictEqual([-3.75]);
-});
-
 test('Method multiply(): vector [1, 0, -0.5] and value 2.25', () => {
   expect(Vector.multiply([1, 0, -0.5], 2.25)).toStrictEqual([2.25, 0, -1.125]);
 });
@@ -44,16 +40,8 @@ test('Method isOrthogonal(): vectors [2,-1] and [3,6]', () => {
   expect(Vector.isOrthogonal([2, -1], [3, 6])).toBe(true);
 });
 
-test('Method isOrthonormal(): vector [1,0]', () => {
-  expect(Vector.isOrthonormal([1, 0])).toBe(true);
-});
-
 test('Method areOrthogonal(): vectors [1,0], [1,2], [2,-1]', () => {
   expect(Vector.areOrthogonal([1, 0], [1, 2], [2, -1])).toBe(false);
-});
-
-test('Method areOrthonormal(): vectors [1,0], [1,2], [2,-1]', () => {
-  expect(Vector.areOrthonormal([1, 0], [1, 2], [2, -1])).toBe(false);
 });
 
 test('Method getAngle(): vectors [1,1], [1,0]', () => {
@@ -100,5 +88,5 @@ test('Error: vectors with a string', () => {
 test('Error: second argument is a string instead of a number', () => {
   expect(() => {
     Vector.multiply([2, 3], '3');
-  }).toThrow('Invalid argument: value must be a number.');
+  }).toThrow('Invalid argument: x must be a number.');
 });

@@ -90,18 +90,6 @@ test('Elementary matrix operations', () => {
     [0.5, -0.5],
     [1.5, -0.5],
   ]);
-
-  expect(Matrix.subtractColFromCol(matrix, 2, 1)).toStrictEqual([
-    [1, 2],
-    [0, -2],
-    [1.5, -2],
-  ]);
-
-  expect(Matrix.subtractRowFromRow(matrix, 2, 3, 2)).toStrictEqual([
-    [1, 3],
-    [-3, -1],
-    [1.5, -0.5],
-  ]);
 });
 
 test('Method isEqual(...)', () => {
@@ -377,7 +365,7 @@ test('Error: invalid argument/s', () => {
   expect(() => {
     Matrix.multiply([[1, 2]], [[1], [2], [3]]);
   }).toThrow(
-    'Invalid argument: matrixA must have the same number of columns as matrixB of rows.'
+    'Invalid argument: first matrix must have the same number of columns as second matrix of rows.'
   );
 
   expect(() => {
